@@ -16,7 +16,7 @@ public class DataSeeder {
     @Bean
     public CommandLineRunner initData() {
         return args -> {
-            // Check if 'admin' already exists so we don't create duplicates
+
             if (userRepository.findByUsername("admin").isEmpty()) {
                 User admin = new User();
                 admin.setUsername("admin");

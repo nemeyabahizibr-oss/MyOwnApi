@@ -16,7 +16,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Page<Student> getAllStudents(Pageable pageable) {
-        return studentRepository.findAll(pageable); // Satisfies Pagination requirement
+        return studentRepository.findAll(pageable);
     }
 
     @Override

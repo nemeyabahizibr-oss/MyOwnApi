@@ -15,7 +15,6 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // We changed "name" to these two fields to match your Service logic
     private String firstName;
     private String lastName;
 

@@ -24,7 +24,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Department updateDepartment(Long id, Department deptDetails) {
-        // We find the department, update it, and save it
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Not found"));
         department.setName(deptDetails.getName());

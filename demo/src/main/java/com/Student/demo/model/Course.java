@@ -24,7 +24,7 @@ public class Course {
     @JsonIgnore
     private Teacher teacher;
 
-    // ADD THIS SECTION:
+
     @ManyToOne
     @JoinColumn(name = "department_id")
     @JsonIgnore
