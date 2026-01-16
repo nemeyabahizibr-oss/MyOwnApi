@@ -1,5 +1,6 @@
 package com.Student.demo.config;
 
+import com.Student.demo.security.JwtFilter;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
