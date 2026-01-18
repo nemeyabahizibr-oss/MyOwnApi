@@ -3,7 +3,6 @@ package com.Student.demo.service;
 import com.Student.demo.exception.ResourceNotFoundException;
 import com.Student.demo.model.Student;
 import com.Student.demo.repository.StudentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,8 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    @Autowired
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
+
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     @Override
     public Page<Student> getAllStudents(Pageable pageable) {

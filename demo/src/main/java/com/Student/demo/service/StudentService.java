@@ -6,11 +6,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface StudentService {
     Page<Student> getAllStudents(Pageable pageable);
-
     Student saveStudent(Student student);
     Student getStudentById(Long id);
-    void deleteStudent(Long id);
-
-
     Student updateStudent(Long id, Student student);
+    void deleteStudent(Long id);
 }

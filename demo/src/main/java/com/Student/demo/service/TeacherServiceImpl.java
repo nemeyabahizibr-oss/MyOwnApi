@@ -3,15 +3,17 @@ package com.Student.demo.service;
 import com.Student.demo.exception.ResourceNotFoundException;
 import com.Student.demo.model.Teacher;
 import com.Student.demo.repository.TeacherRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
 
-    @Autowired
-    private TeacherRepository teacherRepository;
+    private final TeacherRepository teacherRepository;
+
+    public TeacherServiceImpl(TeacherRepository teacherRepository) {
+        this.teacherRepository = teacherRepository;
+    }
 
     @Override
     public List<Teacher> getAllTeachers() {
@@ -26,7 +28,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public Teacher getTeacherById(Long id) {
         return teacherRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found for id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found with id: " + id));
     }
 
     @Override
@@ -40,6 +42,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public void deleteTeacher(Long id) {
-        teacherRepository.deleteById(id);
+        Teacher teacher = getTeacherById(id);
+        teacherRepository.delete(teacher);
     }
 }

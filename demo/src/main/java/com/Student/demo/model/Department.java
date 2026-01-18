@@ -1,14 +1,18 @@
 package com.Student.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table(name = "departments")
+@Table(
+        name = "departments",
+        indexes = @Index(columnList = "name"),
+        uniqueConstraints = @UniqueConstraint(columnNames = "name")
+)
 @Data
 public class Department {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,6 +20,5 @@ public class Department {
     private String name;
 
     @OneToMany(mappedBy = "department")
-    @JsonIgnore
     private List<Course> courses;
 }

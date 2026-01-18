@@ -1,16 +1,19 @@
 package com.Student.demo.service;
 
+import com.Student.demo.exception.ResourceNotFoundException;
 import com.Student.demo.model.Department;
 import com.Student.demo.repository.DepartmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
 
-    @Autowired
-    private DepartmentRepository departmentRepository;
+    private final DepartmentRepository departmentRepository;
+
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
+        this.departmentRepository = departmentRepository;
+    }
 
     @Override
     public List<Department> getAllDepartments() {
@@ -23,15 +26,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Department updateDepartment(Long id, Department deptDetails) {
+    public Department updateDepartment(Long id, Department departmentDetails) {
         Department department = departmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Not found"));
-        department.setName(deptDetails.getName());
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
+        department.setName(departmentDetails.getName());
         return departmentRepository.save(department);
     }
 
     @Override
     public void deleteDepartment(Long id) {
-        departmentRepository.deleteById(id);
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
+        departmentRepository.delete(department);
     }
 }
