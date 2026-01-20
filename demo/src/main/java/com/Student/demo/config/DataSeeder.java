@@ -21,19 +21,12 @@ public class DataSeeder {
     @Bean
     public CommandLineRunner initData() {
         return args -> {
-
             if (userRepository.findByUsername("admin").isEmpty()) {
-
                 User admin = new User();
                 admin.setUsername("admin");
                 admin.setPassword(passwordEncoder.encode("admin123"));
                 admin.setRole("ROLE_ADMIN");
-
                 userRepository.save(admin);
-
-                System.out.println(">>> Security: Default admin user created (admin/admin123)");
-            } else {
-                System.out.println(">>> Security: Admin user already exists");
             }
         };
     }
