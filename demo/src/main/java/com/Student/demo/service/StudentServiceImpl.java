@@ -1,20 +1,33 @@
 package com.Student.demo.service;
 
+import com.Student.demo.dto.StudentDTO;
 import com.Student.demo.exception.ResourceNotFoundException;
+import com.Student.demo.model.Course;
+import com.Student.demo.model.Department;
 import com.Student.demo.model.Student;
+import com.Student.demo.repository.CourseRepository;
+import com.Student.demo.repository.DepartmentRepository;
 import com.Student.demo.repository.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private final StudentRepository studentRepository;
+    @Autowired
+    private StudentRepository studentRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
+    @Autowired
+    private CourseRepository courseRepository;
+
+    @Autowired
+    private DepartmentRepository departmentRepository;
 
     @Override
     public Page<Student> getAllStudents(Pageable pageable) {
@@ -22,7 +35,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student saveStudent(Student student) {
+    @Transactional
+    public Student saveStudent(StudentDTO dto) {
+        Student student = new Student();
+        student.setFirstName(dto.getFirstName());
+        student.setLastName(dto.getLastName());
+        student.setEmail(dto.getEmail());
+        student.setEnrolledCourses(resolveCourses(dto.getCourseCodes()));
         return studentRepository.save(student);
     }
 
@@ -33,17 +52,52 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student updateStudent(Long id, Student studentDetails) {
+    @Transactional
+    public Student updateStudent(Long id, StudentDTO dto) {
         Student student = getStudentById(id);
-        student.setFirstName(studentDetails.getFirstName());
-        student.setLastName(studentDetails.getLastName());
-        student.setEmail(studentDetails.getEmail());
+        student.setFirstName(dto.getFirstName());
+        student.setLastName(dto.getLastName());
+        student.setEmail(dto.getEmail());
+        student.setEnrolledCourses(resolveCourses(dto.getCourseCodes()));
         return studentRepository.save(student);
     }
 
     @Override
+    @Transactional
     public void deleteStudent(Long id) {
         Student student = getStudentById(id);
         studentRepository.delete(student);
+    }
+
+    @Override
+    @Transactional
+    public Student assignDepartmentToStudent(Long studentId, Long departmentId) {
+        Student student = getStudentById(studentId);
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + departmentId));
+        student.setDepartment(department);
+        return studentRepository.save(student);
+    }
+
+    @Override
+    @Transactional
+    public Student assignCourseToStudent(Long studentId, Long courseId) {
+        Student student = getStudentById(studentId);
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + courseId));
+        student.getEnrolledCourses().add(course);
+        return studentRepository.save(student);
+    }
+
+    private Set<Course> resolveCourses(Set<String> courseCodes) {
+        Set<Course> courses = new HashSet<>();
+        if (courseCodes != null) {
+            for (String code : courseCodes) {
+                Course course = courseRepository.findByCourseCode(code)
+                        .orElseThrow(() -> new ResourceNotFoundException("Course code not found: " + code));
+                courses.add(course);
+            }
+        }
+        return courses;
     }
 }
