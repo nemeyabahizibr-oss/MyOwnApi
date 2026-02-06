@@ -55,7 +55,6 @@ public class StudentController {
             @PathVariable Long departmentId) {
         return ResponseEntity.ok(studentService.assignDepartmentToStudent(studentId, departmentId));
     }
-
     @PostMapping("/{studentId}/assign-course/{courseId}")
     public ResponseEntity<Student> assignCourseToStudent(
             @PathVariable Long studentId,
